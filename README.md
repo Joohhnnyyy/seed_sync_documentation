@@ -4,6 +4,8 @@
 
 SeedSync is an AI-powered framework designed to revolutionize modern agriculture through data-driven insights and intelligent automation. This repository hosts the interactive documentation for the SeedSync platform, providing comprehensive information about its features, architecture, and capabilities.
 
+🌐 **Official Website:** [seed-sync-website.vercel.app](https://seed-sync-website.vercel.app)
+
 ## 📖 Interactive Documentation
 
 The `doc.html` file in this repository contains an interactive report that showcases SeedSync's intelligent modules, system architecture, and the technology stack powering the platform. This documentation is designed to be both informative and engaging, with interactive elements that demonstrate the platform's capabilities.
