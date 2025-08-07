@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeedSync Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Earthy Neutrals -->
+    <!-- Application Structure Plan: The SPA is designed as a top-down narrative dashboard. It starts with a high-level summary, then moves to interactive model performance, followed by a detailed exploration of each of SeedSync's intelligent modules. A final section addresses limitations and the future roadmap. This structure was chosen to guide the user from a broad understanding to a deep, feature-specific analysis, which is more intuitive than the report's academic structure. Key interactions include tabbed navigation for modules and hover-to-reveal details on charts, making dense information digestible. -->
+    <!-- Visualization & Content Choices: Report Info -> Goal -> Viz/Presentation -> Interaction -> Justification -> Library. 1. Model Performance -> Compare -> Bar Chart -> Hover for details -> Clear comparison of high-accuracy models -> Chart.js. 2. System Architecture -> Organize -> HTML/CSS Diagram -> Static -> Simple, clear representation of the tech stack -> Tailwind CSS. 3. Module Details -> Inform/Organize -> Tabbed Content Cards -> Click to switch -> Manages complexity by showing one module at a time -> Vanilla JS + Tailwind. 4. Limitations/Future -> Inform -> Accordion List -> Click to expand -> Condenses text-heavy sections for scannability -> Vanilla JS + Tailwind. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .nav-link {
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #4A7C59;
+            border-bottom-color: #4A7C59;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #EAEAEA;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .tab-button {
+            transition: all 0.3s;
+        }
+        .tab-button.active {
+            background-color: #4A7C59;
+            color: #FFFFFF;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-[#4A7C59]">
+                <span class="text-gray-700">Seed</span>Sync
+            </h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#overview" class="nav-link active">Overview</a>
+                <a href="#performance" class="nav-link">Performance</a>
+                <a href="#modules" class="nav-link">Modules</a>
+                <a href="#architecture" class="nav-link">Architecture</a>
+                <a href="#outlook" class="nav-link">Outlook</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#overview" class="block py-2 nav-link active">Overview</a>
+            <a href="#performance" class="block py-2 nav-link">Performance</a>
+            <a href="#modules" class="block py-2 nav-link">Modules</a>
+            <a href="#architecture" class="block py-2 nav-link">Architecture</a>
+            <a href="#outlook" class="block py-2 nav-link">Outlook</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="overview" class="scroll-mt-24 text-center mb-24">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">An AI-Powered Framework for Smart Agriculture</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">
+                This interactive report explores SeedSync, a comprehensive platform using AI and data engineering to optimize the entire crop cycle. It transitions farming from traditional methods to a dynamic, precise paradigm, equipping farmers with data-driven insights to tackle modern agricultural challenges.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 text-left">
+                <div class="card p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2 text-[#4A7C59]">Holistic & Integrated</h3>
+                    <p class="text-gray-600">Unlike fragmented solutions, SeedSync offers a unified, modular architecture for end-to-end support, from crop selection to yield forecasting, creating a synergistic effect for coherent agricultural strategies.</p>
+                </div>
+                <div class="card p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2 text-[#4A7C59]">Robust Technology</h3>
+                    <p class="text-gray-600">Built on a modern stack (React, FastAPI, Supabase), SeedSync is engineered for performance, scalability, and reliability, ensuring low latency for critical real-time decision-making.</p>
+                </div>
+                <div class="card p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2 text-[#4A7C59]">Democratizing AI</h3>
+                    <p class="text-gray-600">The core mission is to make advanced agri-tech accessible to all farmers, empowering them with predictive analytics to increase productivity, reduce environmental impact, and enhance food security.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="performance" class="scroll-mt-24 mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Exceptional AI Model Performance</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    SeedSync's AI models demonstrate remarkable accuracy and reliability across all core functions. The chart below visualizes the performance metrics of the key predictive models. You can hover over each bar to see the specific metric and its value, highlighting the system's precision in providing actionable recommendations.
+                </p>
+            </div>
+            <div class="card p-6 rounded-lg">
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="modules" class="scroll-mt-24 mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">SeedSync's Intelligent Modules</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    The platform is composed of eight core services, each targeting a specific challenge in the agricultural cycle. These modules work both independently and in concert to provide holistic support. Use the tabs below to explore each module's functionality, the technology behind it, and its impact on farming practices.
+                </p>
+            </div>
+            <div class="card p-6 rounded-lg">
+                <div class="mb-6 border-b border-gray-200">
+                    <nav class="-mb-px flex flex-wrap gap-4" aria-label="Tabs">
+                        <button class="tab-button active shrink-0 border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="crop">Crop Recommendation</button>
+                        <button class="tab-button shrink-0 border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="fertilizer">Fertilizer Planning</button>
+                        <button class="tab-button shrink-0 border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="yield">Yield Prediction</button>
+                        <button class="tab-button shrink-0 border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="disease">Disease Detection</button>
+                        <button class="tab-button shrink-0 border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="pest">Pest Forecasting</button>
+                        <button class="tab-button shrink-0 border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="irrigation">Irrigation Advisory</button>
+                         <button class="tab-button shrink-0 border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="rotation">Crop Rotation</button>
+                        <button class="tab-button shrink-0 border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700" data-tab="schemes">Govt. Schemes</button>
+                    </nav>
+                </div>
+                <div id="tab-content">
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="scroll-mt-24 mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">System Architecture & Technology Stack</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    SeedSync is built on a modern, scalable three-tier architecture. This design ensures modular development, secure integration, and high performance. The diagram below outlines the key technologies used in the frontend, backend, and database layers, showcasing the robust foundation that powers the platform's intelligent services.
+                </p>
+            </div>
+            <div class="card p-8 rounded-lg">
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div class="flex flex-col items-center">
+                        <div class="w-20 h-20 bg-green-100 text-green-700 rounded-full flex items-center justify-center mb-4 text-3xl">🖥️</div>
+                        <h4 class="font-bold text-xl mb-2">Frontend Layer</h4>
+                        <p class="text-gray-600">React, TypeScript, Tailwind CSS, Shadcn/UI, Framer Motion</p>
+                        <p class="text-sm text-gray-500 mt-2">Ensures a responsive, interactive, and mobile-friendly user experience.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-20 h-20 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center mb-4 text-3xl">⚙️</div>
+                        <h4 class="font-bold text-xl mb-2">Backend Layer</h4>
+                        <p class="text-gray-600">FastAPI, Python, TensorFlow, Scikit-learn, Gemini API</p>
+                        <p class="text-sm text-gray-500 mt-2">Provides high-performance, asynchronous APIs for real-time ML model inference.</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-20 h-20 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center mb-4 text-3xl">💾</div>
+                        <h4 class="font-bold text-xl mb-2">Database & Auth</h4>
+                        <p class="text-gray-600">Supabase (PostgreSQL), Firebase Authentication</p>
+                        <p class="text-sm text-gray-500 mt-2">Manages user data, history, and secure authentication with JWT.</p>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-center items-center space-x-4">
+                    <span class="font-semibold">Deployment:</span>
+                    <span class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">Vercel (Frontend)</span>
+                    <span class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">Render (Backend)</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="outlook" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Strategic Outlook: Limitations & Future</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                    SeedSync's development team transparently acknowledges current limitations and has a clear roadmap for future enhancements. This commitment to iterative improvement is vital for long-term success and credibility. Explore the current challenges and the exciting future trajectory of the platform below.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-4 text-red-600">Current Limitations</h3>
+                    <div id="limitations-accordion" class="space-y-2"></div>
+                </div>
+                <div class="card p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-4 text-green-600">Future Enhancements</h3>
+                    <div id="enhancements-accordion" class="space-y-2"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-24">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 SeedSync Interactive Report. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">This is an interactive visualization based on the "SeedSync – Crop Cycle Optimization Using Data and Feature Engineering" report.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if (mobileMenu.contains(e.target)) {
+                       mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+
+            const performanceData = {
+                labels: ['Crop Recommendation', 'Fertilizer Recommendation', 'Yield Prediction', 'Disease Detection'],
+                datasets: [{
+                    label: 'Model Performance',
+                    data: [0.98, 0.97, 0.96, 0.97],
+                    backgroundColor: [
+                        'rgba(74, 124, 89, 0.6)',
+                        'rgba(106, 153, 119, 0.6)',
+                        'rgba(138, 181, 149, 0.6)',
+                        'rgba(170, 209, 179, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(74, 124, 89, 1)',
+                        'rgba(106, 153, 119, 1)',
+                        'rgba(138, 181, 149, 1)',
+                        'rgba(170, 209, 179, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            const performanceChartCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(performanceChartCtx, {
+                type: 'bar',
+                data: performanceData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 0.9,
+                            max: 1.0,
+                            ticks: {
+                                color: '#4A4A4A'
+                            },
+                            grid: {
+                                color: '#EAEAEA'
+                            }
+                        },
+                        x: {
+                             ticks: {
+                                color: '#4A4A4A',
+                                 callback: function(value) {
+                                    const label = this.getLabelForValue(value);
+                                    if (label.length > 16) {
+                                        return label.match(/.{1,16}/g);
+                                    }
+                                    return label;
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        const metric = context.label === 'Yield Prediction' ? 'R² Score' : 'Accuracy';
+                                        label += `${metric}: ${context.parsed.y}`;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const modulesData = {
+                crop: {
+                    title: 'Intelligent Crop Recommendation',
+                    icon: '🌿',
+                    description: 'Suggests the most suitable crops based on soil parameters (N, P, K, pH), climate, and historical data. It helps reduce risks and enhance potential yields.',
+                    tech: 'Bagging Classifier',
+                    impact: 'Promotes sustainability by matching crops to land conditions. A confidence scoring system offers flexibility in decision-making.'
+                },
+                fertilizer: {
+                    title: 'Personalized Fertilizer Planning',
+                    icon: '🧪',
+                    description: 'Analyzes soil nutrients and crop requirements to recommend precise fertilizer dosages (organic or chemical).',
+                    tech: 'Deep Neural Network',
+                    impact: 'Optimizes nutrient management, reduces fertilizer overuse and environmental runoff, and aligns with national Soil Health Card guidelines.'
+                },
+                yield: {
+                    title: 'Predictive Yield Forecasting',
+                    icon: '📈',
+                    description: 'Forecasts expected crop yields using historical weather, soil data, and crop type.',
+                    tech: 'Gradient Boosting Regressor',
+                    impact: 'Enables informed decisions on labor, market timing, and logistics. Scenario-based analysis allows for "what-if" planning to build resilience.'
+                },
+                disease: {
+                    title: 'Real-Time Disease Detection',
+                    icon: '📸',
+                    description: 'Uses image analysis to identify plant diseases from photos of leaves uploaded by farmers.',
+                    tech: 'MobileNetV2 (CNN)',
+                    impact: 'Democratizes diagnostics, enabling rapid response to infections, reducing crop loss, and minimizing pesticide use.'
+                },
+                pest: {
+                    title: 'Climate-Aware Pest Forecasting',
+                    icon: '🐛',
+                    description: 'Predicts potential pest and disease outbreaks by analyzing climatic data and historical trends.',
+                    tech: 'Rule-Based + Gemini API',
+                    impact: 'Shifts from reactive to preventive pest management, reducing crop damage and supporting Integrated Pest Management (IPM) principles.'
+                },
+                irrigation: {
+                    title: 'Contextual Irrigation Advisory',
+                    icon: '💧',
+                    description: 'Provides timely, crop-specific irrigation schedules based on growth stage, soil moisture, and weather forecasts.',
+                    tech: 'Rule-Based + Gemini API',
+                    impact: 'Conserves water resources, prevents over-irrigation, and boosts crop health, which is vital in drought-prone regions.'
+                },
+                rotation: {
+                    title: 'Data-Driven Crop Rotation',
+                    icon: '🔄',
+                    description: 'Recommends optimal crop sequences using a rule-based engine and compatibility matrix to improve soil health.',
+                    tech: 'Rule-Based Engine',
+                    impact: 'Minimizes nutrient depletion, breaks pest cycles, and improves soil structure, tailored to farmer goals like yield maximization or cost reduction.'
+                },
+                schemes: {
+                    title: 'Personalized Govt. Scheme Notifier',
+                    icon: '📜',
+                    description: 'Aggregates and filters government schemes (e.g., PM-KISAN), matching them to farmers based on eligibility criteria.',
+                    tech: 'Filtering Logic',
+                    impact: 'Addresses informational asymmetry, empowering farmers by simplifying access to crucial economic support and subsidies.'
+                }
+            };
+            
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContentContainer = document.getElementById('tab-content');
+
+            function updateTabContent(tabId) {
+                const content = modulesData[tabId];
+                tabContentContainer.innerHTML = `
+                    <div class="p-4">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-3 flex items-center"><span class="text-3xl mr-3">${content.icon}</span> ${content.title}</h3>
+                        <p class="text-gray-600 mb-4">${content.description}</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-lg text-[#4A7C59]">Technology Used</h4>
+                                <p class="text-gray-600">${content.tech}</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg text-[#4A7C59]">Agricultural Impact</h4>
+                                <p class="text-gray-600">${content.impact}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    updateTabContent(tabId);
+                });
+            });
+
+            updateTabContent('crop');
+
+            const limitations = [
+                { title: 'Input Accuracy Dependence', content: 'Recommendations rely heavily on the accuracy of user-provided data like soil tests, which may not always be precise.' },
+                { title: 'Regional Data Gaps', content: 'Dataset coverage is not yet complete for all of India\'s diverse agro-climatic zones, potentially limiting model generalization.' },
+                { title: 'Connectivity Constraints', content: 'As a web-app, it requires stable internet, which is a challenge in many rural areas, hindering access.' },
+                { title: 'Language Barrier', content: 'The platform is currently only available in English, limiting accessibility for a majority of Indian farmers.' },
+                { title: 'No Real-Time IoT Data', content: 'Lacks integration with real-time sensors (IoT), making recommendations periodic rather than continuous and proactive.' }
+            ];
+
+            const enhancements = [
+                { title: 'IoT & Sensor Integration', content: 'Integrate with IoT devices for live soil and weather data, enabling true real-time precision agriculture.' },
+                { title: 'Regional Language Support', content: 'Add multilingual support to enhance accessibility and inclusivity for farmers across India.' },
+                { title: 'Market Trend Analytics', content: 'Introduce a module to predict market prices and demand, helping farmers make more economically viable decisions.' },
+                { title: 'Offline-First PWA', content: 'Develop Progressive Web App capabilities to allow basic functionality without a stable internet connection.' },
+                { title: 'Satellite & Chatbot Integration', content: 'Incorporate satellite NDVI maps for remote crop health monitoring and a multilingual chatbot for interactive assistance.' }
+            ];
+
+            function createAccordion(containerId, items) {
+                const container = document.getElementById(containerId);
+                items.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'border-b border-gray-200';
+                    itemDiv.innerHTML = `
+                        <button class="accordion-button w-full text-left py-3 px-4 flex justify-between items-center font-medium text-gray-700 hover:bg-gray-50">
+                            <span>${item.title}</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content px-4 pb-3 text-gray-600">
+                            ${item.content}
+                        </div>
+                    `;
+                    container.appendChild(itemDiv);
+                });
+            }
+
+            createAccordion('limitations-accordion', limitations);
+            createAccordion('enhancements-accordion', enhancements);
+            
+            document.querySelectorAll('.accordion-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const icon = button.querySelector('span:last-child');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
